@@ -1,0 +1,45 @@
+===========================================================================================================
+Ко всем NEW:
+
+enum MYSQL_SETTINGS
+{
+HOST,
+USERNAME,
+PASSWORD,
+DATABASE
+}
+new MySQLSettings[MYSQL_SETTINGS][30];
+===========================================================================================================
+В конец мода:
+
+stock LoadMySQLSettings()
+{
+	new FileID = ini_openFile("mysql_settings.ini"),errCode;
+	if(FileID < 0)
+	{
+	printf("Error while opening MySQL settings file. Error code: %d",FileID);
+	return 0;
+	}
+	errCode = ini_getString(FileID,"host",MySQLSettings[HOST]);
+	if(errCode < 0) printf("Error while reading MySQL settings file (host). Error code: %d",errCode);
+	errCode = ini_getString(FileID,"username",MySQLSettings[USERNAME]);
+	if(errCode < 0) printf("Error while reading MySQL settings file (username). Error code: %d",errCode);
+	errCode = ini_getString(FileID,"password",MySQLSettings[PASSWORD]);
+	if(errCode < 0) printf("Error while reading MySQL settings file (password). Error code: %d",errCode);
+	errCode = ini_getString(FileID,"database",MySQLSettings[DATABASE]);
+	if(errCode < 0) printf("Error while reading MySQL settings file (database). Error code: %d",errCode);
+	ini_closeFile(FileID);
+	return true;
+}
+===========================================================================================================
+В OnGameModeInit (можно перед mysql_connect):
+
+LoadMySQLSettings();
+===========================================================================================================
+И сам mysql_connect меняем на:
+
+mysql_connect(MySQLSettings[HOST], MySQLSettings[USERNAME], MySQLSettings[DATABASE], MySQLSettings[PASSWORD]);
+===========================================================================================================
+Проверяем инклюд mxini
+
+Create file in catalog - scriptfiles, and use a this name: mysql_settings.ini
